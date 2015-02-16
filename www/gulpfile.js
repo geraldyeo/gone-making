@@ -7,7 +7,6 @@ var del = require('del');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var notify = require('gulp-notify');
-var reactify = require('reactify');
 var source = require('vinyl-source-stream');
 var sourcemaps = require("gulp-sourcemaps");
 var to5ify = require('6to5ify');
@@ -25,9 +24,7 @@ function buildScript(file, watch) {
 	props.debug = true;
 
 	var bundler = watch ? watchify(browserify(props)) : browserify(props);
-	bundler
-		.transform(reactify)
-		.transform(to5ify);
+	bundler.transform(to5ify);
 
 	function rebundle() {
 		var stream = bundler.bundle();
@@ -54,15 +51,21 @@ function buildScript(file, watch) {
 
 
 ///// TASKS /////
-gulp.task('build', ['clean:build'], function() {
+gulp.task('build', ['clean:build', 'copy'], function() {
 	return buildScript('main.js', false);
 });
 
 
-gulp.task('clean:build', function(cb) {
-	del([
-		'build/**',
-	], cb);
+gulp.task('clean:build', function() {
+	return del(['build/**',]);
+});
+
+
+gulp.task('copy', function() {
+	return gulp.src([
+					scriptsDir + '/index.html'
+				])
+				.pipe(gulp.dest(buildDir + '/'));;
 });
 
 
