@@ -1,7 +1,6 @@
 {
     "folders": [{
         "file_exclude_patterns": [
-            "*.css",
             "*.sublime-workspace"
         ],
         "folder_exclude_patterns": [

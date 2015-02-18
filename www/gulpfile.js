@@ -20,10 +20,8 @@ var browserify = require('browserify'),
 	uglify = require('gulp-uglify'),
 	watchify = require('watchify'),
 	// less
-	LessPluginCleanCSS = require('less-plugin-clean-css'),
-    LessPluginAutoPrefix = require('less-plugin-autoprefix'),
-    cleancss = new LessPluginCleanCSS({advanced: true}),
-    autoprefix= new LessPluginAutoPrefix({browsers: ["last 2 versions"]}),
+	minifyCSS = require('gulp-minify-css'),
+	autoprefixer = require('gulp-autoprefixer'),
 	// paths
 	scriptsDir = './app/',
 	testsDir = './tests/',
@@ -49,7 +47,9 @@ function buildScript(file, watch) {
 			}))
 			.pipe(source(file))
 			.pipe(buffer())
-			.pipe(sourcemaps.init({loadMaps: true}))
+			.pipe(sourcemaps.init({
+				loadMaps: true
+			}))
 			.pipe(uglify())
 			.pipe(sourcemaps.write('./maps'))
 			.pipe(gulp.dest(buildDir));
@@ -89,42 +89,35 @@ gulp.task('jshint', function() {
 });
 
 
-gulp.task('less', function() {
-	var combined = combiner.obj([
-		gulp.src([
+gulp.task('compile:less', function() {
+	return gulp.src([
 			scriptsDir + '**/*.less'
-		]),
-		sourcemaps.init(),
-		less({
-			plugins: [autoprefix, cleancss]
-		}),
-		sourcemaps.write('./maps'),
-		gulp.dest(buildDir + 'css/')
-	]);
-
-	combined.on('error', console.error.bind(console));
-
-	return combined;
-
-	// gulp.src([
-	// 		scriptsDir + '**/*.less'
-	// 	])
-	// 	//.pipe(cache('less'))
-	// 	.pipe(sourcemaps.init())
-	// 	.pipe(less({
-	// 		plugins: [autoprefix, cleancss]
-	// 	}))
-	// 	.on('error', gutil.log)
-	// 	.pipe(sourcemaps.write('./maps'))
-	// 	.pipe(gulp.dest(buildDir + 'css/'));
+		])
+		.pipe(cache('less'))
+		.pipe(sourcemaps.init())
+		.pipe(less())
+		.pipe(autoprefixer({
+			browsers: ['last 2 versions'],
+			cascade: false
+		}))
+		.pipe(minifyCSS({
+			keepBreaks: true
+		}))
+		.pipe(sourcemaps.write('../maps'))
+		.pipe(gulp.dest(buildDir + 'css/'));
 });
 
 
-gulp.task('build', ['clean:build', 'copy', 'jshint', 'less'], function() {
+gulp.task('watch:less', function() {
+	return gulp.watch(scriptsDir + '**/*.less', ['compile:less']);
+});
+
+
+gulp.task('build', ['clean:build', 'copy', 'jshint', 'compile:less'], function() {
 	return buildScript('main.js', false);
 });
 
 
-gulp.task('default', ['build'], function() {
+gulp.task('default', ['build', 'watch-less'], function() {
 	return buildScript('main.js', true);
 });
