@@ -6,11 +6,14 @@ var browserify = require('browserify'),
 	cache = require('gulp-cached'),
 	combiner = require('stream-combiner2'),
 	del = require('del'),
+	express = require('express'),
 	gulp = require('gulp'),
+	gulpif = require('gulp-if'),
 	gutil = require('gulp-util'),
 	jshint = require('gulp-jshint'),
 	jshintstylish = require('jshint-stylish'),
 	less = require('gulp-less'),
+	livereload = require('gulp-livereload'),
 	notify = require('gulp-notify'),
 	react = require('gulp-react'),
 	rename = require('gulp-rename'),
@@ -22,10 +25,31 @@ var browserify = require('browserify'),
 	// less
 	minifyCSS = require('gulp-minify-css'),
 	autoprefixer = require('gulp-autoprefixer'),
+	// express
+	EXPRESS_PORT = 4000,
+	EXPRESS_ROOT = __dirname,
+	LIVERELOAD_PORT = 35729,
 	// paths
 	scriptsDir = './app/',
 	testsDir = './tests/',
 	buildDir = './build/';
+
+
+///// HELPERS /////
+function startExpress() {
+	var app = express();
+	app.use(require('connect-livereload')());
+	app.use(express.static(EXPRESS_ROOT));
+	app.listen(EXPRESS_PORT);
+}
+
+
+function startLivereload() {
+	livereload({
+		port: LIVERELOAD_PORT,
+		start: true
+	});
+}
 
 
 function buildScript(file, watch) {
@@ -52,7 +76,8 @@ function buildScript(file, watch) {
 			}))
 			.pipe(uglify())
 			.pipe(sourcemaps.write('./maps'))
-			.pipe(gulp.dest(buildDir));
+			.pipe(gulp.dest(buildDir))
+			.pipe(gulpif(watch, livereload()));
 	}
 
 	bundler.on('update', function() {
@@ -104,12 +129,19 @@ gulp.task('compile:less', function() {
 			keepBreaks: true
 		}))
 		.pipe(sourcemaps.write('../maps'))
-		.pipe(gulp.dest(buildDir + 'css/'));
+		.pipe(gulp.dest(buildDir + 'css/'))
+		.pipe(livereload());
 });
 
 
 gulp.task('watch:less', function() {
-	return gulp.watch(scriptsDir + '**/*.less', ['compile:less']);
+	gulp.watch(scriptsDir + '**/*.less', ['compile:less']);
+});
+
+
+gulp.task('server', function() {
+	startExpress();
+	startLivereload();
 });
 
 
@@ -118,6 +150,6 @@ gulp.task('build', ['clean:build', 'copy', 'jshint', 'compile:less'], function()
 });
 
 
-gulp.task('default', ['build', 'watch-less'], function() {
+gulp.task('default', ['server', 'build', 'watch:less'], function() {
 	return buildScript('main.js', true);
 });
