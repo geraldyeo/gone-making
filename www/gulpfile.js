@@ -2,10 +2,10 @@
  * Created by Gerald on 12/2/15.
  */
 var argv = require('yargs').argv,
+	babelify = require('babelify'),
 	browserify = require('browserify'),
 	buffer = require('vinyl-buffer'),
 	cache = require('gulp-cached'),
-	combiner = require('stream-combiner2'),
 	del = require('del'),
 	gulp = require('gulp'),
 	gulpif = require('gulp-if'),
@@ -21,12 +21,11 @@ var argv = require('yargs').argv,
 	rename = require('gulp-rename'),
 	source = require('vinyl-source-stream'),
 	sourcemaps = require("gulp-sourcemaps"),
-	to5ify = require('6to5ify'),
 	uglify = require('gulp-uglify'),
 	watchify = require('watchify'),
 	// less
-	minifyCSS = require('gulp-minify-css'),
 	autoprefixer = require('gulp-autoprefixer'),
+	minifyCSS = require('gulp-minify-css'),
 	// servers
 	LIVERELOAD_PORT = 35729,
 	// flags
@@ -80,7 +79,7 @@ function buildScript(file, watch) {
 	props.debug = true;
 
 	bundler = watch ? watchify(browserify(props)) : browserify(props);
-	bundler.transform(to5ify);
+	bundler.transform(babelify);
 
 	function rebundle() {
 		stream = bundler.bundle();
@@ -127,7 +126,7 @@ gulp.task('watch', function() {
 	gulp.watch(paths.styles.all, ['css']);
 });
 
-gulp.task('server', function() {
+gulp.task('server:dev', function() {
 	startLivereload();
 
 	nodemon({
@@ -184,8 +183,11 @@ gulp.task('css', function() {
 
 /***** STYLES END *****/
 
+/***** TESTS START *****/
+/***** TESTS END *****/
 
-gulp.task('dev', ['clean', 'js', 'css', 'server', 'watch']);
+
+gulp.task('dev', ['clean', 'js', 'css', 'server:dev', 'watch']);
 
 gulp.task('prod', function() {});
 
