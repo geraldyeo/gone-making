@@ -1,0 +1,18 @@
+{
+	"esprima": "esprima-fb",
+	"fileExtensions": [".js", ".jsx"],
+	"preset": "jquery",
+	"disallowMultipleLineBreaks": null,
+	"disallowSpacesInsideParentheses": true,
+	"disallowSpacesInCallExpression": true,
+	"disallowSpacesInsideObjectBrackets": true,
+	"requireSpacesInsideParentheses": null,
+	"requireSpacesInsideArrayBrackets": null,
+	"requireSpaceAfterLineComment": {
+		"allExcept": ["#", "="]
+	},
+	"validateQuoteMarks": {
+		"mark": true,
+		"escape": true
+	}
+}

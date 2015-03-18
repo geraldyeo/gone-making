@@ -13,6 +13,7 @@ var argv = require('yargs').argv,
 	gutil = require('gulp-util'),
 	jshint = require('gulp-jshint'),
 	jshintstylish = require('jshint-stylish'),
+	jscs = require('gulp-jscs'),
 	less = require('gulp-less'),
 	livereload = require('gulp-livereload'),
 	nodemon = require('gulp-nodemon'),
@@ -152,7 +153,15 @@ gulp.task('lint', function() {
 		.pipe(jshint.reporter(jshintstylish));
 });
 
-gulp.task('js', ['lint'], function() {
+gulp.task('jscs', function() {
+	return gulp.src([
+			paths.scripts.all
+		])
+		.pipe(cache('jscs'))
+		.pipe(jscs());
+});
+
+gulp.task('js', ['lint', 'jscs'], function() {
 	return buildScript('main.js', true);
 });
 

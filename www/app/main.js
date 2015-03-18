@@ -4,9 +4,9 @@
  * This directive is necessary to enable preprocessing of JSX tags:
  * @jsx React.DOM
  */
-var React = require('react/addons');
-var Marty = require('marty');
-var Router = require('./router');
+var React = require('react/addons'),
+	Marty = require('marty'),
+	Router = require('./router');
 
 window.React = React; // For React Developer Tools
 window.Marty = Marty; // For Marty Developer Tools
