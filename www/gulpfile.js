@@ -21,7 +21,7 @@ var argv = require('yargs').argv,
 	path = require('path'),
 	rename = require('gulp-rename'),
 	source = require('vinyl-source-stream'),
-	sourcemaps = require("gulp-sourcemaps"),
+	sourcemaps = require('gulp-sourcemaps'),
 	uglify = require('gulp-uglify'),
 	watchify = require('watchify'),
 	// less
@@ -30,38 +30,40 @@ var argv = require('yargs').argv,
 	// servers
 	LIVERELOAD_PORT = 35729,
 	// flags
-	production = !!(argv.production);
+	production = !!(argv.production),
+	// paths
+	paths = {
+		server: {
+			index: './app/server/index.js'
+		},
 
-var paths = {
-	server: {
-		index: './app/server/index.js',
-	},
+		scripts: {
+			dir: './app/',
+			all: './app/**/*.js'
+		},
 
-	scripts: {
-		dir: './app/',
-		all: './app/**/*.js',
-	},
+		styles: {
+			dir: './less/',
+			all: './less/**/*.less'
+		},
 
-	styles: {
-		dir: './less/',
-		all: './less/**/*.less'
-	},
+		tests: {
+			dir: './tests/',
+			all: './tests/**/*.js'
+		},
 
-	tests: {
-		dir: './tests/',
-		all: './tests/**/*.js'
-	},
-
-	build: {
-		dir: './build/',
-		all: './build/**/*',
-		scripts: './build/js/',
-		styles: './build/css/'
-	}
-};
+		build: {
+			dir: './build/',
+			all: './build/**/*',
+			scripts: './build/js/',
+			styles: './build/css/'
+		}
+	};
 
 
-///// HELPERS /////
+/************
+ * HELPERS
+ ************/
 
 function startLivereload() {
 	livereload({
@@ -72,7 +74,7 @@ function startLivereload() {
 
 
 function buildScript(file, watch) {
-	"use strict";
+	'use strict';
 	var props, bundler, stream;
 
 	props = watch ? watchify.args : {};
@@ -108,7 +110,9 @@ function buildScript(file, watch) {
 }
 
 
-////////// GULP TASKS //////////
+/************
+ * GULP TASKS
+ ************/
 
 /***** MISC START *****/
 
