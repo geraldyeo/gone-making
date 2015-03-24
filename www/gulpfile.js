@@ -2,7 +2,6 @@
  * Created by Gerald on 12/2/15.
  */
 var argv = require('yargs').argv,
-	babel = require('gulp-babel'),
 	babelify = require('babelify'),
 	browserify = require('browserify'),
 	buffer = require('vinyl-buffer'),
@@ -19,6 +18,7 @@ var argv = require('yargs').argv,
 	nodemon = require('gulp-nodemon'),
 	notify = require('gulp-notify'),
 	path = require('path'),
+	react = require('gulp-react'),
 	rename = require('gulp-rename'),
 	source = require('vinyl-source-stream'),
 	sourcemaps = require('gulp-sourcemaps'),
@@ -152,7 +152,7 @@ gulp.task('lint', function() {
 			paths.scripts.all
 		])
 		.pipe(cache('jshint'))
-		.pipe(babel())
+		.pipe(react())
 		.pipe(jshint('.jshintrc'))
 		.pipe(jshint.reporter(jshintstylish));
 });
