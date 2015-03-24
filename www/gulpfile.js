@@ -166,7 +166,7 @@ gulp.task('jscs', function() {
 });
 
 gulp.task('js', ['lint', 'jscs'], function() {
-	return buildScript('main.js', true);
+	return buildScript('main.js', !production);
 });
 
 /***** SCRIPTS END *****/
@@ -200,8 +200,8 @@ gulp.task('css', function() {
 /***** TESTS END *****/
 
 
-gulp.task('dev', ['clean', 'js', 'css', 'server:dev', 'watch']);
+gulp.task('build', ['clean', 'js', 'css']);
 
-gulp.task('prod', function() {});
+gulp.task('dev', ['build', 'server:dev', 'watch']);
 
-gulp.task('default', ['prod']);
+gulp.task('default', ['dev']);

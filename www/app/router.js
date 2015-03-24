@@ -5,7 +5,7 @@
  */
 var React = require("react/addons"),
 	Router = require("react-router"),
-	Route = Router.Route,
+	{ Link, Route } = Router,
 
 	routes = [
 		<Route
