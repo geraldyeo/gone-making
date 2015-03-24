@@ -1,3 +1,6 @@
+/**
+ * @flow
+ */
 var Marty = require('marty'),
 	Router = require('../router'),
 	NavigationActionCreators;

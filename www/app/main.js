@@ -1,18 +1,17 @@
 /**
  * main
  *
- * This directive is necessary to enable preprocessing of JSX tags:
- * @jsx React.DOM
+ * @flow
  */
 var React = require('react/addons'),
-	Marty = require('marty'),
-	Router = require('./router');
+	Router = require('./router'),
+	Marty = require('marty');
 
 window.React = React; // For React Developer Tools
 window.Marty = Marty; // For Marty Developer Tools
 
 if (process.env.NODE_ENV !== 'test') {
-	Router.run(function(Handler, state) {
+	Router.run((Handler, state) => {
 		React.render(<Handler {...state.params} />,
 						document.getElementById('app'));
 	});

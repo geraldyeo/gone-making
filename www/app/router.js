@@ -1,8 +1,7 @@
 /**
  * Router
  *
- * This directive is necessary to enable preprocessing of JSX tags:
- * @jsx React.DOM
+ * @flow
  */
 var React = require("react/addons"),
 	Router = require("react-router"),
